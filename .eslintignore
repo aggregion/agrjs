@@ -1,0 +1,9 @@
+*.json
+node_modules/*
+scripts/*
+bin/*
+soap/*
+newrelic.js
+coverage/*
+Dockerfile*
+aggregion.sublime-project
