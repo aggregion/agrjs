@@ -5,14 +5,14 @@ General purpose library for Aggregion blockchain.
 
 ### Installation
 
-* Install with: `npm install agrjs`
+* Install with: `npm install @aggregion/agrjs`
 
 ### Usage
 
 Ways to instantiate eosjs.
 
 ```js
-const Agr = require('agrjs')
+const Agr = require('@aggregion/agrjs')
 
 // Private key or keys (array) provided statically or by way of a function.
 // For multiple keys, the get_required_keys API is used (more on that below).
@@ -69,7 +69,7 @@ agr.getInfo((error, result) => { console.log(error, result) })
 ### Configuration
 
 ```js
-const Agr = require('agrjs')
+const Agr = require('@aggregion/agrjs')
 
 // Default configuration
 const config = {
@@ -129,7 +129,7 @@ const agr = new Agr(config);
 * **transactionHeaders** (advanced) - manually calculate transaction header.  This
   may be provided so agrjs does not need to make header related API calls to
   agrnode.  Used in environments like cold-storage.  This callback is called for
-  every transaction. 
+  every transaction.
   * `transactionHeaders: (expireInSeconds, callback) => {callback(null/*error*/, headers)}`
 
 * **logger** - default logging configuration.

@@ -533,7 +533,7 @@ it('Transaction ABI cache', async function() {
     assert.deepEqual(abi, eos.fc.abiCache.abi('eosio'));
 });
 
-it.only('Transaction ABI lookup', async function() {
+it('Transaction ABI lookup', async function() {
     const eos = Eos({httpEndpoint, verbose: true});
     const tx = await eos.transaction(
         {
