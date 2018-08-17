@@ -9,7 +9,7 @@ General purpose library for Aggregion blockchain.
 
 ### Usage
 
-Ways to instantiate eosjs.
+Ways to instantiate agrjs.
 
 ```js
 const Agr = require('@aggregion/agrjs')
@@ -27,7 +27,7 @@ const agr = new Agr({httpEndpoint, chainId, keyProvider})
 // Cold-storage
 const agr = new Agr({httpEndpoint: null, chainId, keyProvider})
 
-// Read-only instance when 'eosjs' is already a dependency
+// Read-only instance when 'agrjs' is already a dependency
 const agr = new Agr.modules.api({/*config*/})
 
 ```
@@ -100,7 +100,7 @@ const agr = new Agr(config);
 
 * **httpEndpoint** `string` - http or https location of a agrnode server
   providing a chain API.  When using agrjs from a browser remember to configure
-  the same origin policy in agrnode or proxy server.  For testing, nodeosd
+  the same origin policy in agrnode or proxy server.  For testing, agrnode
   configuration `access-control-allow-origin = *` could be used.
 
   Set this value to **null** for a cold-storage (no network) configuration.
@@ -146,7 +146,7 @@ const agr = new Agr(config);
 
 Options may be provided after parameters.
 
-NOTE: `authorization` is for individual actions, it does not belong in `Eos(config)`.
+NOTE: `authorization` is for individual actions, it does not belong in `Agr(config)`.
 
 ```js
 options = {
@@ -157,7 +157,7 @@ options = {
 ```
 
 ```js
-eos.transfer('alice', 'bob', '1.0000 AGR', '', options)
+agr.transfer('alice', 'bob', '1.0000 AGR', '', options)
 ```
 
 * **authorization** `[array<auth>|auth]` - identifies the
@@ -497,35 +497,35 @@ Use Node v10+ for `package-lock.json`.
 
 # Related Libraries
 
-These libraries are integrated into `eosjs` seamlessly so you probably do not
+These libraries are integrated into `agrjs` seamlessly so you probably do not
 need to use them directly.  They are exported here giving more API access or
 in some cases may be used standalone.
 
 ```javascript
-var {format, api, ecc, json, Fcbuffer} = Eos.modules
+var {format, api, ecc, json, Fcbuffer} = agr.modules
 ```
 * format [./format.md](./docs/format.md)
   * Blockchain name validation
   * Asset string formatting
 
-* eosjs-api [[Github](https://github.com/eosio/eosjs-api), [NPM](https://www.npmjs.org/package/eosjs-api)]
-  * Remote API to an EOS blockchain node (nodeos)
+* agrjs-api [[Github](https://github.com/aggregion/agrjs-api), [NPM](https://www.npmjs.org/package/agrjs-api)]
+  * Remote API to an AGR blockchain node (agrnode)
   * Use this library directly if you need read-only access to the blockchain
     (don't need to sign transactions).
 
-* eosjs-ecc [[Github](https://github.com/eosio/eosjs-ecc), [NPM](https://www.npmjs.org/package/eosjs-ecc)]
+* agrjs-ecc [[Github](https://github.com/aggregion/agrjs-ecc), [NPM](https://www.npmjs.org/package/agrjs-ecc)]
   * Private Key, Public Key, Signature, AES, Encryption / Decryption
   * Validate public or private keys
-  * Encrypt or decrypt with EOS compatible checksums
+  * Encrypt or decrypt with AGR compatible checksums
   * Calculate a shared secret
 
-* json {[api](https://github.com/EOSIO/eosjs-api/blob/master/src/api), [schema](https://github.com/EOSIO/eosjs/blob/master/src/schema)},
+* json {[api](https://github.com/aggregion/agrjs-api/blob/master/src/api), [schema](https://github.com/aggregion/agrjs/blob/master/src/schema)},
   * Blockchain definitions (api method names, blockchain schema)
 
-* eosjs-keygen [[Github](https://github.com/eosio/eosjs-keygen), [NPM](https://www.npmjs.org/package/eosjs-keygen)]
+* agrjs-keygen [[Github](https://github.com/aggregion/agrjs-keygen), [NPM](https://www.npmjs.org/package/agrjs-keygen)]
   * private key storage and key management
 
-* Fcbuffer [[Github](https://github.com/eosio/eosjs-fcbuffer), [NPM](https://www.npmjs.org/package/fcbuffer)]
+* Fcbuffer [[Github](https://github.com/aggregion/agrjs-fcbuffer), [NPM](https://www.npmjs.org/package/fcbuffer)]
   * Binary serialization used by the blockchain
   * Clients sign the binary form of the transaction
   * Allows client to know what it is signing
