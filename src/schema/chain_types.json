@@ -205,7 +205,7 @@
   "nonce": {
     "action": {
       "name": "nonce",
-      "account": "eosio.null"
+      "account": "agrio.null"
     },
     "fields": {
       "value": "string"

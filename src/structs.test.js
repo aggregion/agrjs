@@ -11,9 +11,8 @@ describe('shorthand', () => {
         const eos = Eos();
         const {authority} = eos.fc.structs;
 
-        const pubkey = 'EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV';
+        const pubkey = 'AGR6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV';
         const auth = {threshold: 1, keys: [{key: pubkey, weight: 1}]};
-
         assert.deepEqual(authority.fromObject(pubkey), auth);
         assert.deepEqual(
             authority.fromObject(auth),
@@ -26,8 +25,8 @@ describe('shorthand', () => {
         const {authority} = eos.fc.structs;
 
         const pubkeys = [
-            'EOS7wBGPvBgRVa4wQN2zm5CjgBF6S7tP7R3JavtSa2unHUoVQGhey',
-            'EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV'
+            'AGR7wBGPvBgRVa4wQN2zm5CjgBF6S7tP7R3JavtSa2unHUoVQGhey',
+            'AGR6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV'
         ];
 
         const authSorted = {
@@ -52,7 +51,7 @@ describe('shorthand', () => {
         const eos = Eos();
         const {structs, types} = eos.fc;
         const PublicKeyType = types.public_key();
-        const pubkey = 'EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV';
+        const pubkey = 'AGR6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV';
         // 02c0ded2bc1f1305fb0faac5e6c03ee3a1924234985427b6167ca569d13df435cf
         assertSerializer(PublicKeyType, pubkey);
     });
@@ -61,7 +60,7 @@ describe('shorthand', () => {
         const eos = Eos();
         const {types} = eos.fc;
         const Symbol = types.symbol();
-        assertSerializer(Symbol, '4,SYS', '4,SYS', 'SYS');
+        assertSerializer(Symbol, '4,AGR', '4,AGR', 'AGR');
     });
 
     it('symbol_code', () => {
@@ -75,14 +74,14 @@ describe('shorthand', () => {
         const eos = Eos({defaults: true});
         const esType = eos.fc.types.extended_symbol();
         // const esString = esType.toObject()
-        assertSerializer(esType, '4,SYS@contract');
+        assertSerializer(esType, '4,AGR@contract');
     });
 
     it('asset', () => {
         const eos = Eos();
         const {types} = eos.fc;
         const aType = types.asset();
-        assertSerializer(aType, '1.0001 SYS');
+        assertSerializer(aType, '1.0001 AGR');
     });
 
     it('extended_asset', () => {
@@ -107,10 +106,10 @@ describe('Eosio Abi', () => {
     it('Eosio token contract parses', done => {
         const eos = Eos();
 
-        eos.contract('eosio.token', (error, eosio_token) => {
+        eos.contract('agrio.token', (error, agrio_token) => {
             assert(!error, error);
-            assert(eosio_token.transfer, 'eosio.token contract');
-            assert(eosio_token.issue, 'eosio.token contract');
+            assert(agrio_token.transfer, 'agrio.token contract');
+            assert(agrio_token.issue, 'agrio.token contract');
             done();
         });
     });
@@ -144,12 +143,12 @@ describe('Action.data', () => {
         const eos = Eos({forceActionDataHex: false});
         const {structs, types} = eos.fc;
         const value = {
-            account: 'eosio.token',
+            account: 'agrio.token',
             name: 'transfer',
             data: {
                 from: 'inita',
                 to: 'initb',
-                quantity: '1.0000 SYS',
+                quantity: '1.0000 AGR',
                 memo: ''
             },
             authorization: []
@@ -161,12 +160,12 @@ describe('Action.data', () => {
         const eos = Eos({forceActionDataHex: true});
         const {structs, types} = eos.fc;
         const value = {
-            account: 'eosio.token',
+            account: 'agrio.token',
             name: 'transfer',
             data: {
                 from: 'inita',
                 to: 'initb',
-                quantity: '1.0000 SYS',
+                quantity: '1.0000 AGR',
                 memo: ''
             },
             authorization: []
@@ -178,7 +177,7 @@ describe('Action.data', () => {
         const eos = Eos({forceActionDataHex: false});
         const {structs, types} = eos.fc;
         const value = {
-            account: 'eosio.token',
+            account: 'agrio.token',
             name: 'mytype',
             data: '030a0b0c',
             authorization: []

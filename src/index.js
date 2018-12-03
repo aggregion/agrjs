@@ -1,4 +1,4 @@
-const ecc = require('eosjs-ecc');
+const ecc = require('@aggregion/agrjs-ecc');
 const Fcbuffer = require('fcbuffer');
 const EosApi = require('eosjs-api');
 const assert = require('assert');
@@ -11,7 +11,7 @@ const schema = require('./schema');
 
 const Eos = (config = {}) => {
     const configDefaults = {
-        httpEndpoint: 'http://127.0.0.1:8888',
+        httpEndpoint: process.env.HTTP_ENDPOINT || 'http://127.0.0.1:8888',
         debug: false,
         verbose: false,
         broadcast: true,
@@ -207,7 +207,7 @@ const defaultSignProvider = (eos, config) => async function({sign, buf, transact
             // normalize format (WIF => PVT_K1_base58privateKey)
             return {private: ecc.PrivateKey(key).toString()};
         } catch (e) {
-            // normalize format (EOSKey => PUB_K1_base58publicKey)
+            // normalize format (AGRKey => PUB_K1_base58publicKey)
             return {public: ecc.PublicKey(key).toString()};
         }
         assert(false, 'expecting public or private keys from keyProvider');
@@ -257,7 +257,7 @@ const defaultSignProvider = (eos, config) => async function({sign, buf, transact
         const missingKeys = [];
 
         for (let requiredKey of required_keys) {
-            // normalize (EOSKey.. => PUB_K1_Key..)
+            // normalize (AGRKey.. => PUB_K1_Key..)
             requiredKey = ecc.PublicKey(requiredKey).toString();
 
             const wif = keyMap.get(requiredKey);

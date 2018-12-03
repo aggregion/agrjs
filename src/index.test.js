@@ -57,7 +57,7 @@ describe('offline', () => {
             ref_block_num: 1,
             ref_block_prefix: 452435776,
             actions: [{
-                account: 'eosio.null',
+                account: 'agrio.null',
                 name: 'nonce',
                 authorization: [{
                     actor: 'inita',
@@ -78,7 +78,7 @@ describe('offline', () => {
         });
 
         const memo = '';
-        const trx = await eos.transfer('few', 'many', '100.0000 SYS', memo);
+        const trx = await eos.transfer('few', 'many', '100.0000 AGR', memo);
 
         assert.deepEqual({
             expiration: trx.transaction.transaction.expiration,
@@ -97,13 +97,13 @@ describe('offline', () => {
     it('abi', async function() {
         const eos = Eos({httpEndpoint});
 
-        const abiBuffer = fs.readFileSync(`docker/contracts/eosio.bios/eosio.bios.abi`);
+        const abiBuffer = fs.readFileSync(`docker/contracts/agrio.bios/agrio.bios.abi`);
         const abiObject = JSON.parse(abiBuffer);
 
-        assert.deepEqual(abiObject, eos.fc.abiCache.abi('eosio.bios', abiBuffer).abi);
-        assert.deepEqual(abiObject, eos.fc.abiCache.abi('eosio.bios', abiObject).abi);
+        assert.deepEqual(abiObject, eos.fc.abiCache.abi('agrio.bios', abiBuffer).abi);
+        assert.deepEqual(abiObject, eos.fc.abiCache.abi('agrio.bios', abiObject).abi);
 
-        const bios = await eos.contract('eosio.bios');
+        const bios = await eos.contract('agrio.bios');
         assert(typeof bios.newaccount === 'function', 'unrecognized contract');
     });
 
@@ -125,15 +125,15 @@ describe('Contracts', () => {
     it('Messages do not sort', async function() {
         const local = Eos();
         const opts = {sign: false, broadcast: false};
-        const tx = await local.transaction(['currency', 'eosio.token'], ({currency, eosio_token}) => {
-            // make sure {account: 'eosio.token', ..} remains first
-            eosio_token.transfer('inita', 'initd', '1.1000 SYS', '');
+        const tx = await local.transaction(['currency', 'agrio.token'], ({currency, agrio_token}) => {
+            // make sure {account: 'agrio.token', ..} remains first
+            agrio_token.transfer('inita', 'initd', '1.1000 AGR', '');
 
             // {account: 'currency', ..} remains second (reverse sort)
             currency.transfer('inita', 'initd', '1.2000 CUR', '');
 
         }, opts);
-        assert.equal(tx.transaction.transaction.actions[0].account, 'eosio.token');
+        assert.equal(tx.transaction.transaction.actions[0].account, 'agrio.token');
         assert.equal(tx.transaction.transaction.actions[1].account, 'currency');
     });
 });
@@ -168,10 +168,10 @@ describe('Contract', () => {
     // avoids a same contract version deploy error.
     // TODO: undeploy contract instead (when API allows this)
 
-    deploy('eosio.msig');
-    deploy('eosio.token');
-    deploy('eosio.bios');
-    deploy('eosio.system');
+    deploy('agrio.msig');
+    deploy('agrio.token');
+    deploy('agrio.bios');
+    deploy('agrio.system');
 });
 
 describe('Contracts Load', () => {
@@ -183,8 +183,8 @@ describe('Contracts Load', () => {
         });
     }
 
-    load('eosio');
-    load('eosio.token');
+    load('agrio');
+    load('agrio.token');
 });
 
 describe('transactions', () => {
@@ -206,7 +206,7 @@ describe('transactions', () => {
 
         const eos = Eos({keyProvider});
 
-        return eos.transfer('inita', 'initb', '1.0000 SYS', '', false).then(tr => {
+        return eos.transfer('inita', 'initb', '1.0000 AGR', '', false).then(tr => {
             assert.equal(tr.transaction.signatures.length, 1);
             assert.equal(typeof tr.transaction.signatures[0], 'string');
         });
@@ -224,7 +224,7 @@ describe('transactions', () => {
 
         const eos = Eos({keyProvider});
 
-        return eos.transfer('inita', 'initb', '1.2740 SYS', '', false).then(tr => {
+        return eos.transfer('inita', 'initb', '1.2740 AGR', '', false).then(tr => {
             assert.equal(tr.transaction.signatures.length, 1);
             assert.equal(typeof tr.transaction.signatures[0], 'string');
         });
@@ -251,7 +251,7 @@ describe('transactions', () => {
 
         const eos = Eos({keyProvider});
 
-        return eos.transfer('inita', 'initb', '9.0000 SYS', '', false).then(tr => {
+        return eos.transfer('inita', 'initb', '9.0000 AGR', '', false).then(tr => {
             assert.equal(tr.transaction.signatures.length, 1);
             assert.equal(typeof tr.transaction.signatures[0], 'string');
         });
@@ -261,7 +261,7 @@ describe('transactions', () => {
         const keystore = Keystore('uid');
         keystore.deriveKeys({parent: wif});
         const eos = Eos({keyProvider: keystore.keyProvider});
-        return eos.transfer('inita', 'initb', '12.0000 SYS', '', true);
+        return eos.transfer('inita', 'initb', '12.0000 AGR', '', true);
     });
 
     it('keyProvider return Promise', () => {
@@ -270,14 +270,14 @@ describe('transactions', () => {
                 resolve(wif);
             })
         });
-        return eos.transfer('inita', 'initb', '1.6180 SYS', '', true);
+        return eos.transfer('inita', 'initb', '1.6180 AGR', '', true);
     });
 
     it('signProvider', () => {
         const customSignProvider = ({buf, sign, transaction}) => {
 
-            // All potential keys (EOS6MRy.. is the pubkey for 'wif')
-            const pubkeys = ['EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV'];
+            // All potential keys (AGR6MRy.. is the pubkey for 'wif')
+            const pubkeys = ['AGR6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV'];
 
             return eos.getRequiredKeys(transaction, pubkeys).then(res => {
                 // Just the required_keys need to sign
@@ -286,41 +286,41 @@ describe('transactions', () => {
             });
         };
         const eos = Eos({signProvider: customSignProvider});
-        return eos.transfer('inita', 'initb', '2.0000 SYS', '', false);
+        return eos.transfer('inita', 'initb', '2.0000 AGR', '', false);
     });
 
     it('create asset', async function() {
         const eos = Eos({signProvider});
-        const pubkey = 'EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV';
-        const auth = {authorization: 'eosio.token'};
-        await eos.create('eosio.token', '10000 ' + randomAsset(), auth);
-        await eos.create('eosio.token', '10000.00 ' + randomAsset(), auth);
+        const pubkey = 'AGR6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV';
+        const auth = {authorization: 'agrio.token'};
+        await eos.create('agrio.token', '10000 ' + randomAsset(), auth);
+        await eos.create('agrio.token', '10000.00 ' + randomAsset(), auth);
     });
 
     it('newaccount (broadcast)', () => {
         const eos = Eos({signProvider});
-        const pubkey = 'EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV';
+        const pubkey = 'AGR6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV';
         const name = randomName();
 
         return eos.transaction(tr => {
             tr.newaccount({
-                creator: 'eosio',
+                creator: 'agrio',
                 name,
                 owner: pubkey,
                 active: pubkey
             });
 
             tr.buyrambytes({
-                payer: 'eosio',
+                payer: 'agrio',
                 receiver: name,
                 bytes: 8192
             });
 
             tr.delegatebw({
-                from: 'eosio',
+                from: 'agrio',
                 receiver: name,
-                stake_net_quantity: '10.0000 SYS',
-                stake_cpu_quantity: '10.0000 SYS',
+                stake_net_quantity: '10.0000 AGR',
+                stake_cpu_quantity: '10.0000 AGR',
                 transfer: 0
             });
         });
@@ -328,21 +328,21 @@ describe('transactions', () => {
 
     it('mockTransactions pass', () => {
         const eos = Eos({signProvider, mockTransactions: 'pass'});
-        return eos.transfer('inita', 'initb', '1.0000 SYS', '').then(transfer => {
+        return eos.transfer('inita', 'initb', '1.0000 AGR', '').then(transfer => {
             assert(transfer.mockTransaction, 'transfer.mockTransaction');
         });
     });
 
     it('mockTransactions fail', () => {
         const eos = Eos({signProvider, mockTransactions: 'fail'});
-        return eos.transfer('inita', 'initb', '1.0000 SYS', '').catch(error => {
+        return eos.transfer('inita', 'initb', '1.0000 AGR', '').catch(error => {
             assert(error.indexOf('fake error') !== -1, 'expecting: fake error');
         });
     });
 
     it('transfer (broadcast)', () => {
         const eos = Eos({signProvider});
-        return eos.transfer('inita', 'initb', '1.0000 SYS', '');
+        return eos.transfer('inita', 'initb', '1.0000 AGR', '');
     });
 
     it('transfer custom token precision (broadcast)', () => {
@@ -352,12 +352,12 @@ describe('transactions', () => {
 
     it('transfer custom authorization (broadcast)', () => {
         const eos = Eos({signProvider});
-        return eos.transfer('inita', 'initb', '1.0000 SYS', '', {authorization: 'inita@owner'});
+        return eos.transfer('inita', 'initb', '1.0000 AGR', '', {authorization: 'inita@owner'});
     });
 
     it('transfer custom authorization sorting (no broadcast)', () => {
         const eos = Eos({signProvider});
-        return eos.transfer('inita', 'initb', '1.0000 SYS', '',
+        return eos.transfer('inita', 'initb', '1.0000 AGR', '',
             {authorization: ['initb@owner', 'inita@owner'], broadcast: false}
         ).then(({transaction}) => {
             const ans = [
@@ -370,20 +370,20 @@ describe('transactions', () => {
 
     it('transfer (no broadcast)', () => {
         const eos = Eos({signProvider});
-        return eos.transfer('inita', 'initb', '1.0000 SYS', '', {broadcast: false});
+        return eos.transfer('inita', 'initb', '1.0000 AGR', '', {broadcast: false});
     });
 
     it('transfer (no broadcast, no sign)', () => {
         const eos = Eos({signProvider});
         const opts = {broadcast: false, sign: false};
-        return eos.transfer('inita', 'initb', '1.0000 SYS', '', opts).then(tr =>
+        return eos.transfer('inita', 'initb', '1.0000 AGR', '', opts).then(tr =>
             assert.deepEqual(tr.transaction.signatures, [])
         );
     });
 
     it('transfer sign promise (no broadcast)', () => {
         const eos = Eos({signProvider: promiseSigner});
-        return eos.transfer('inita', 'initb', '1.0000 SYS', '', false);
+        return eos.transfer('inita', 'initb', '1.0000 AGR', '', false);
     });
 
     it('action to unknown contract', done => {
@@ -397,13 +397,13 @@ describe('transactions', () => {
     });
 
     it('action to contract', () => {
-        return Eos({signProvider}).contract('eosio.token').then(token => {
-            return token.transfer('inita', 'initb', '1.0000 SYS', '')
+        return Eos({signProvider}).contract('agrio.token').then(token => {
+            return token.transfer('inita', 'initb', '1.0000 AGR', '')
             // transaction sent on each command
                 .then(tr => {
                     assert.equal(1, tr.transaction.transaction.actions.length);
 
-                    return token.transfer('initb', 'inita', '1.0000 SYS', '')
+                    return token.transfer('initb', 'inita', '1.0000 AGR', '')
                         .then(tr => {
                             assert.equal(1, tr.transaction.transaction.actions.length);
                         });
@@ -417,9 +417,9 @@ describe('transactions', () => {
         let amt = 1; // for unique transactions
         const eos = Eos({signProvider});
 
-        const trTest = eosio_token => {
-            assert(eosio_token.transfer('inita', 'initb', amt + '.0000 SYS', '') == null);
-            assert(eosio_token.transfer('initb', 'inita', (amt++) + '.0000 SYS', '') == null);
+        const trTest = agrio_token => {
+            assert(agrio_token.transfer('inita', 'initb', amt + '.0000 AGR', '') == null);
+            assert(agrio_token.transfer('initb', 'inita', (amt++) + '.0000 AGR', '') == null);
         };
 
         const assertTr = tr => {
@@ -427,19 +427,19 @@ describe('transactions', () => {
         };
 
         //  contracts can be a string or array
-        await assertTr(await eos.transaction(['eosio.token'], ({eosio_token}) => trTest(eosio_token)));
-        await assertTr(await eos.transaction('eosio.token', eosio_token => trTest(eosio_token)));
+        await assertTr(await eos.transaction(['agrio.token'], ({agrio_token}) => trTest(agrio_token)));
+        await assertTr(await eos.transaction('agrio.token', agrio_token => trTest(agrio_token)));
     });
 
     it('action to contract (contract tr nesting)', function() {
         this.timeout(4000);
         const tn = Eos({signProvider});
-        return tn.contract('eosio.token').then(eosio_token => {
-            return eosio_token.transaction(tr => {
-                tr.transfer('inita', 'initb', '1.0000 SYS', '');
-                tr.transfer('inita', 'initc', '2.0000 SYS', '');
+        return tn.contract('agrio.token').then(agrio_token => {
+            return agrio_token.transaction(tr => {
+                tr.transfer('inita', 'initb', '1.0000 AGR', '');
+                tr.transfer('inita', 'initc', '2.0000 AGR', '');
             }).then(() => {
-                return eosio_token.transfer('inita', 'initb', '3.0000 SYS', '');
+                return agrio_token.transfer('inita', 'initb', '3.0000 AGR', '');
             });
         });
     });
@@ -447,8 +447,8 @@ describe('transactions', () => {
     it('multi-action transaction (broadcast)', () => {
         const eos = Eos({signProvider});
         return eos.transaction(tr => {
-            assert(tr.transfer('inita', 'initb', '1.0000 SYS', '') == null);
-            assert(tr.transfer({from: 'inita', to: 'initc', quantity: '1.0000 SYS', memo: ''}) == null);
+            assert(tr.transfer('inita', 'initb', '1.0000 AGR', '') == null);
+            assert(tr.transfer({from: 'inita', to: 'initc', quantity: '1.0000 AGR', memo: ''}) == null);
         }).then(tr => {
             assert.equal(2, tr.transaction.transaction.actions.length);
         });
@@ -457,7 +457,7 @@ describe('transactions', () => {
     it('multi-action transaction no inner callback', () => {
         const eos = Eos({signProvider});
         return eos.transaction(tr => {
-            tr.transfer('inita', 'inita', '1.0000 SYS', '', cb => {
+            tr.transfer('inita', 'inita', '1.0000 AGR', '', cb => {
             });
         })
             .then(() => {
@@ -498,12 +498,12 @@ describe('transactions', () => {
             {
                 actions: [
                     {
-                        account: 'eosio',
+                        account: 'agrio',
                         name: 'transfer',
                         data: {
                             from: 'inita',
                             to: 'initb',
-                            quantity: '13.0000 SYS',
+                            quantity: '13.0000 AGR',
                             memo: '爱'
                         },
                         authorization: [{
@@ -527,10 +527,10 @@ describe('transactions', () => {
 
 it('Transaction ABI cache', async function() {
     const eos = Eos();
-    assert.throws(() => eos.fc.abiCache.abi('eosio'), /not cached/);
-    const abi = await eos.fc.abiCache.abiAsync('eosio');
-    assert.deepEqual(abi, await eos.fc.abiCache.abiAsync('eosio', false/* force*/));
-    assert.deepEqual(abi, eos.fc.abiCache.abi('eosio'));
+    assert.throws(() => eos.fc.abiCache.abi('agrio'), /not cached/);
+    const abi = await eos.fc.abiCache.abiAsync('agrio');
+    assert.deepEqual(abi, await eos.fc.abiCache.abiAsync('agrio', false/* force*/));
+    assert.deepEqual(abi, eos.fc.abiCache.abi('agrio'));
 });
 
 it('Transaction ABI lookup', async function() {

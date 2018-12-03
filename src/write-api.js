@@ -1,5 +1,5 @@
 const assert = require('assert');
-const ecc = require('eosjs-ecc');
+const ecc = require('@aggregion/agrjs-ecc');
 const Fcbuffer = require('fcbuffer');
 const createHash = require('create-hash');
 const {processArgs} = require('eosjs-api');
@@ -100,7 +100,7 @@ function WriteApi(Network, network, config, Transaction) {
 
             const abiPromises = [];
             // Eos contract operations are cached (efficient and offline transactions)
-            const cachedCode = new Set(['eosio', 'eosio.token', 'eosio.null']);
+            const cachedCode = new Set(['agrio', 'agrio.token', 'agrio.null']);
             accounts.forEach(account => {
                 if (!cachedCode.has(account)) {
                     abiPromises.push(config.abiCache.abiAsync(account));
@@ -171,7 +171,7 @@ function WriteApi(Network, network, config, Transaction) {
         });
     }
 
-    function genMethod(type, definition, transactionArg, account = 'eosio.token', name = type) {
+    function genMethod(type, definition, transactionArg, account = 'agrio.token', name = type) {
         return function(...args) {
             if (args.length === 0) {
                 console.log(usage(type, definition, Network, account, config));
@@ -572,7 +572,7 @@ function usage(type, definition, Network, account, config) {
     out();
 
     let struct;
-    if (account === 'eosio' || account === 'eosio.token') {
+    if (account === 'agrio' || account === 'agrio.token') {
         const {structs} = Structs(
             Object.assign(
                 {defaults: true, network: Network},

@@ -1,4 +1,4 @@
-const {Signature, PublicKey} = require('eosjs-ecc');
+const {Signature, PublicKey} = require('@aggregion/agrjs-ecc');
 const Fcbuffer = require('fcbuffer');
 const ByteBuffer = require('bytebuffer');
 const assert = require('assert');
@@ -11,10 +11,10 @@ const {
     printAsset, parseAsset
 } = require('./format');
 
-/** Configures Fcbuffer for EOS specific structs and types. */
+/** Configures Fcbuffer for AGR specific structs and types. */
 module.exports = (config = {}, extendedSchema) => {
     const structLookup = (lookupName, account) => {
-        const cachedCode = new Set(['eosio', 'eosio.token', 'eosio.null']);
+        const cachedCode = new Set(['agrio', 'agrio.token', 'agrio.null']);
         if (cachedCode.has(account)) {
             return structs[lookupName];
         }
@@ -175,7 +175,7 @@ const PublicKeyEcc = validation => {
 
         toObject(value) {
             if (validation.defaults && value == null) {
-                return 'EOS6MRy..';
+                return 'AGR6MRy..';
             }
             return value;
         }
@@ -185,7 +185,7 @@ const PublicKeyEcc = validation => {
 /**
  Internal: precision, symbol
  External: symbol
- @example 'SYS'
+ @example 'AGR'
  */
 const Symbol = validation => {
     return {
@@ -226,7 +226,7 @@ const Symbol = validation => {
 
         toObject(value) {
             if (validation.defaults && value == null) {
-                return 'SYS';
+                return 'AGR';
             }
             // symbol only (without precision prefix)
             return parseAsset(value).symbol;
@@ -267,7 +267,7 @@ const SymbolCode = validation => {
 
         toObject(value) {
             if (validation.defaults && value == null) {
-                return 'SYS';
+                return 'AGR';
             }
             return parseAsset(value).symbol;
         }
@@ -277,7 +277,7 @@ const SymbolCode = validation => {
 /**
  Internal: precision, symbol, contract
  External: symbol, contract
- @example 'SYS@contract'
+ @example 'AGR@contract'
  */
 const ExtendedSymbol = (validation, baseTypes, customTypes) => {
     const symbolType = customTypes.symbol(validation);
@@ -306,7 +306,7 @@ const ExtendedSymbol = (validation, baseTypes, customTypes) => {
 
         toObject(value) {
             if (validation.defaults && value == null) {
-                return 'SYS@contract';
+                return 'AGR@contract';
             }
             return value;
         }
@@ -315,7 +315,7 @@ const ExtendedSymbol = (validation, baseTypes, customTypes) => {
 
 /**
  Internal: amount, precision, symbol, contract
- @example '1.0000 SYS'
+ @example '1.0000 AGR'
  */
 const Asset = (validation, baseTypes, customTypes) => {
     const amountType = baseTypes.int64(validation);
@@ -355,7 +355,7 @@ const Asset = (validation, baseTypes, customTypes) => {
 
         toObject(value) {
             if (validation.defaults && value == null) {
-                return '0.0001 SYS';
+                return '0.0001 AGR';
             }
 
             const {amount, precision, symbol} = parseAsset(value);
@@ -369,7 +369,7 @@ const Asset = (validation, baseTypes, customTypes) => {
 };
 
 /**
- @example '1.0000 SYS@contract'
+ @example '1.0000 AGR@contract'
  */
 const ExtendedAsset = (validation, baseTypes, customTypes) => {
     const assetType = customTypes.asset(validation);
@@ -396,7 +396,7 @@ const ExtendedAsset = (validation, baseTypes, customTypes) => {
         },
 
         fromObject(value) {
-            // like: 1.0000 SYS@contract or 1 SYS@contract
+            // like: 1.0000 AGR@contract or 1 AGR@contract
             const asset = {};
             if (typeof value === 'string') {
                 Object.assign(asset, parseAsset(value));
@@ -420,8 +420,8 @@ const ExtendedAsset = (validation, baseTypes, customTypes) => {
                 return {
                     amount: '1.0000',
                     precision: 4,
-                    symbol: 'SYS',
-                    contract: 'eosio.token'
+                    symbol: 'AGR',
+                    contract: 'agrio.token'
                 };
             }
 
@@ -468,7 +468,7 @@ const SignatureType = (validation, baseTypes) => {
 };
 
 const authorityOverride = ({
-    /** shorthand `EOS6MRyAj..` */
+    /** shorthand `AGR6MRyAj..` */
     'authority.fromObject': value => {
         if (PublicKey.fromString(value)) {
             return {
@@ -508,7 +508,7 @@ const abiOverride = structLookup => ({
     },
 
     'setabi.abi.appendByteBuffer': ({fields, object, b}) => {
-        const ser = structLookup('abi_def', 'eosio');
+        const ser = structLookup('abi_def', 'agrio');
         const b2 = new ByteBuffer(ByteBuffer.DEFAULT_CAPACITY, ByteBuffer.LITTLE_ENDIAN);
 
         if (Buffer.isBuffer(object.abi)) {

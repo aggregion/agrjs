@@ -1,6 +1,6 @@
 {
   "name": "@aggregion/agrjs",
-  "version": "17.0.1",
+  "version": "17.0.5",
   "description": "General purpose library for the Aggregion blockchain.",
   "main": "lib/index.js",
   "files": [
@@ -58,11 +58,11 @@
     "uglify-js": "3.4.1"
   },
   "dependencies": {
+    "@aggregion/agrjs-ecc": "^4.0.5",
     "babel-runtime": "6.26.0",
     "binaryen": "^37.0.0",
     "create-hash": "^1.1.3",
     "eosjs-api": "7.0.3",
-    "eosjs-ecc": "4.0.3",
     "fcbuffer": "2.2.0"
   },
   "babel": {
